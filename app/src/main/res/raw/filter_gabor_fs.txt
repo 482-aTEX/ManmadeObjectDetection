@@ -24,7 +24,6 @@ uniform vec2 uPixelSize;
 
 vec3 filter(vec3 color, sampler2D texture, vec2 texturePos) {
 
-
 	float red = texture2D(texture, vec2(texturePos.x, texturePos.y)).rgb.x;
 	float green = texture2D(texture, vec2(texturePos.x, texturePos.y)).rgb.y;
 	float blue = texture2D(texture, vec2(texturePos.x, texturePos.y)).rgb.z;
