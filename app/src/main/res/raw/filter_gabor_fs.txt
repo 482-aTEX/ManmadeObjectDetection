@@ -1,0 +1,54 @@
+/*
+   Copyright 2012 Harri Smatt
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
+
+precision mediump float;
+
+uniform sampler2D sTexture;
+
+varying vec2 vTextureCoord;
+
+uniform vec2 uPixelSize;
+
+vec3 filter(vec3 color, sampler2D texture, vec2 texturePos) {
+
+
+	float red = texture2D(texture, vec2(texturePos.x, texturePos.y)).rgb.x;
+	float green = texture2D(texture, vec2(texturePos.x, texturePos.y)).rgb.y;
+	float blue = texture2D(texture, vec2(texturePos.x, texturePos.y)).rgb.z;
+
+	float gray = (red + green + blue) / 3.0;
+
+	return vec3(gray, gray, gray);
+}
+
+void main() {
+	vec3 color = texture2D(sTexture, vTextureCoord).rgb;
+
+	color = filter(color, sTexture, vTextureCoord);
+
+	// Calculate brightness, contrast and saturation.
+	// color = brightness(color, uBrightness);
+	// color = contrast(color, uContrast);
+	// color = saturation(color, uSaturation);
+
+	// Calculate darkened corners.
+	//const float sqrt2 = 1.414213562373;
+	//float len = distance(vTextureCoord, vec2(0.5)) * sqrt2;
+	//len = smoothstep(1.0 - uCornerRadius, 1.0, len);
+	//color *= mix(0.5, 1.0, 1.0 - len);
+
+	gl_FragColor = vec4(color, 1.0);
+}
