@@ -1,3 +1,6 @@
+#version 300 es
+#extension GL_OES_EGL_image_external : require
+
 /*
    Copyright 2012 Harri Smatt
 
@@ -16,9 +19,9 @@
 
 uniform mat4 uOrientationM;
 uniform mat4 uTransformM;
-attribute vec2 aPosition;
+in vec2 aPosition;
 
-varying vec2 vTextureCoord;
+out vec2 vTextureCoord;
 
 void main() {
 	gl_Position = vec4(aPosition, 0.0, 1.0);

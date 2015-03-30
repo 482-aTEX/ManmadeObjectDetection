@@ -1,3 +1,5 @@
+#version 300 es
+#extension GL_OES_EGL_image_external : require
 /*
    Copyright 2012 Harri Smatt
 
@@ -19,8 +21,9 @@
 precision mediump float;
 
 uniform samplerExternalOES sTexture;
-varying vec2 vTextureCoord;
+in vec2 vTextureCoord;
+out vec4 outcolor;
 
 void main() {
-	gl_FragColor = texture2D(sTexture, vTextureCoord);
+	outcolor = texture2D(sTexture, vTextureCoord);
 }
