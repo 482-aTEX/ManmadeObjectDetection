@@ -64,7 +64,7 @@ public class GaborFilterView extends GLSurfaceView implements GLSurfaceView.Rend
 
     // TODO: make this get called in PreviewFragment on its GaborFilterView Object probably in openCamera()
     public void setCameraOrientationAngle(int angle) {
-        Matrix.setRotateM(mOrientationMat, 0, angle-90, 0f, 0f, 1f);
+        Matrix.setRotateM(mOrientationMat, 0, angle, 0f, 0f, 1f);
     }
 
     public void setPreviewAspectRatio(Size size) {
