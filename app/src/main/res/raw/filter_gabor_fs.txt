@@ -162,7 +162,7 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
                     product = product + (grays[kern_index] * kern[kern_index]);
 
                     if(((kern_index+1) % (kernel_width*kernel_width)) == 0) {
-                        gabor_values[k] = product;
+                        gabor_values[k++] = product;
                         product = 0.0;
                     }
 
