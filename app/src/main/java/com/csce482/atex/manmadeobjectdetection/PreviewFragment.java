@@ -2,6 +2,7 @@ package com.csce482.atex.manmadeobjectdetection;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.RectF;
@@ -257,12 +258,22 @@ public class PreviewFragment extends Fragment {
                 // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
                 // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
                 // garbage capture data.
+                Log.d("Cam Setup", "W = " + width + " and H = " + height + " and L = " + largest.getWidth() + " x " + largest.getHeight());
                 mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
                         width, height, largest);
+                Log.d("Optimal Size", "W = " + mPreviewSize.getWidth() + " and H = " + mPreviewSize.getHeight());
 
+                int orientation = getResources().getConfiguration().orientation;
+                if(orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    mGaborFilterView.setPreviewAspectRatio(new Size(mPreviewSize.getWidth(), mPreviewSize.getHeight()));
+                }
+                else {
+                    mGaborFilterView.setPreviewAspectRatio(new Size(mPreviewSize.getHeight(), mPreviewSize.getWidth()));
+                }
                 // The renderer needs this info so we send it when we open the camera
-                mGaborFilterView.setPreviewAspectRatio(mPreviewSize);
-                mGaborFilterView.setCameraOrientationAngle(characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION));
+                //mGaborFilterView.setPreviewAspectRatio(mPreviewSize);
+                //mGaborFilterView.setCameraOrientationAngle(characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION));
+                mGaborFilterView.setCameraOrientationAngle(getResources().getConfiguration().orientation);
 
                 mCameraId = cameraId;
                 return;
@@ -278,6 +289,7 @@ public class PreviewFragment extends Fragment {
         int w = aspectRatio.getWidth();
         int h = aspectRatio.getHeight();
         for (Size option : choices) {
+            Log.d("Options", "W = " + option.getWidth() + " H = " + option.getHeight());
             if (option.getHeight() == option.getWidth() * h / w &&
                     option.getWidth() >= width && option.getHeight() >= height) {
                 bigEnough.add(option);
@@ -287,6 +299,7 @@ public class PreviewFragment extends Fragment {
         // Pick the smallest of those, assuming we found any
         if (bigEnough.size() > 0) {
             return Collections.min(bigEnough, new CompareSizesByArea());
+            //return new Size(1280, 720);
         } else {
             return choices[0];
         }

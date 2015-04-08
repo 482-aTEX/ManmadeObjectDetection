@@ -179,7 +179,8 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
 	    return vec3(0.0, 0.9, 0.0);
 
     //return vec3(product, product, product);
-	return vec3(gabor_vals[0], gabor_vals[0], gabor_vals[0]);
+	return vec3(gabor_values[0], gabor_values[0], gabor_values[0]);
+	//return texture(tex, vec2(x, y)).rgb;    //for testing camera purposes
 }
 
 void main() {
