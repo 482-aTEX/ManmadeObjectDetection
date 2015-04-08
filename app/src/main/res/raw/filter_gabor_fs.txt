@@ -123,6 +123,8 @@ const float kern[216] = float[](
 -0.056545544, 1.4235137E-7, 0.100984946
 );
 
+#define KERNEL_WIDTH    3
+#define ARRAY_SIZE      9
 
 vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
 
@@ -132,13 +134,13 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
 	float x = texturePos.x;
 	float y = texturePos.y;
 
-	int kernel_width = 3;
+	//int kernel_width = 3;
 
 	float product = 0.0;
 	float gray;
 	int i, j, k;
 	k=0;
-	int offset = kernel_width / 2;
+	int offset = KERNEL_WIDTH / 2;
     vec4 pixel_rgb;
 
     int kern_index = 0;
@@ -146,7 +148,7 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
     float gabor_vals[24];
     gabor_vals[0] = 1.0;
 
-    float gray_vals[kernel_width*kernel_width];
+    float gray_vals[ARRAY_SIZE];     //doesn't like dynamically sized arrays
 
     //1536x1952
     if(((x/dx) > 4.0) && ((y/dy) > 4.0) && ((x/dx) < 1532.0) && ((y/dy) < 1948.0) && (kern_index < 599)) {
@@ -161,15 +163,13 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
         }
 
         for(k = 0; k < 24; ++k) {
-            for(i = 0; i < (kernel_width*kernel_width); ++i) {
+            for(i = 0; i < ARRAY_SIZE; ++i) {
 
                 product = product + (gray_vals[i] * kern[i]);
 
-                if(((kern_index+1) % (kernel_width*kernel_width)) == 0) {
-                    gabor_vals[k] = product;
-                    product = 0.0;
-                }
             }
+            gabor_vals[k] = product;
+            product = 0.0;
         }
     } else {
         product = 1.0;
@@ -179,7 +179,7 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
 	    return vec3(0.0, 0.9, 0.0);
 
     //return vec3(product, product, product);
-	return vec3(gabor_values[0], gabor_values[0], gabor_values[0]);
+	return vec3(gabor_vals[0], gabor_vals[0], gabor_vals[0]);
 	//return texture(tex, vec2(x, y)).rgb;    //for testing camera purposes
 }
 
