@@ -144,26 +144,29 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
     int kern_index = 0;
     float gabor_values[24];
     gabor_values[0] = 1.0;
+    float grays[24];
 
     //1536x1952
     if(((x/dx) > 4.0) && ((y/dy) > 4.0) && ((x/dx) < 1532.0) && ((y/dy) < 1948.0) && (kern_index < 599)) {
 
-        for(k = 0; k < 12; ++k) {
-            for(i = -offset; i <= offset; ++i) {
-                for(j = -offset; j <= offset; ++j) {
+        for(i = -offset; i < offset; ++i) {
+            for(j = -offset; j < offset; ++j) {
+                pixel_rgb = texture(tex, vec2(x + float(j)*dx, y + float(i)*dy));
+                grays[k++] = (pixel_rgb[0] + pixel_rgb[1] + pixel_rgb[2]) / 3.0 * 255.0;
+            }
+        }
+        k = 0;
+        for(i = -offset; i <= offset; ++i) {
+            for(j = -offset; j <= offset; ++j) {
 
-                        pixel_rgb = texture(tex, vec2(x + float(j)*dx, y + float(i)*dy));
-                        gray = (pixel_rgb[0] + pixel_rgb[1] + pixel_rgb[2]) / 3.0 * 255.0;
+                    product = product + (grays[kern_index] * kern[kern_index]);
 
-                        product = product + (gray * kern[kern_index]);
+                    if(((kern_index+1) % (kernel_width*kernel_width)) == 0) {
+                        gabor_values[k] = product;
+                        product = 0.0;
+                    }
 
-                        if(((kern_index+1) % (kernel_width*kernel_width)) == 0) {
-                            gabor_values[k] = product;
-                            product = 0.0;
-                        }
-
-                        kern_index++;
-                }
+                    kern_index++;
             }
         }
     } else {
@@ -175,6 +178,7 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
 
     //return vec3(product, product, product);
 	return vec3(gabor_values[0], gabor_values[0], gabor_values[0]);
+	//return texture(tex, vec2(x, y)).rgb;    //for testing camera purposes
 }
 
 void main() {
