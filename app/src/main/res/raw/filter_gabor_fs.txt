@@ -142,27 +142,32 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
     vec4 pixel_rgb;
 
     int kern_index = 0;
-    float gabor_values[24];
-    gabor_values[0] = 1.0;
+    int gray_index = 0;
+    float gabor_vals[24];
+    gabor_vals[0] = 1.0;
+
+    float gray_vals[kernel_width*kernel_width];
 
     //1536x1952
     if(((x/dx) > 4.0) && ((y/dy) > 4.0) && ((x/dx) < 1532.0) && ((y/dy) < 1948.0) && (kern_index < 599)) {
 
-        for(k = 0; k < 12; ++k) {
-            for(i = -offset; i <= offset; ++i) {
-                for(j = -offset; j <= offset; ++j) {
+        for(i = -offset; i <= offset; ++i) {
+            for(j = -offset; j <= offset; ++j) {
 
-                        pixel_rgb = texture(tex, vec2(x + float(j)*dx, y + float(i)*dy));
-                        gray = (pixel_rgb[0] + pixel_rgb[1] + pixel_rgb[2]) / 3.0 * 255.0;
+                    pixel_rgb = texture(tex, vec2(x + float(j)*dx, y + float(i)*dy));
+                    gray_vals[gray_index] = (pixel_rgb[0] + pixel_rgb[1] + pixel_rgb[2]) / 3.0 * 255.0;
+                    gray_index++;
+            }
+        }
 
-                        product = product + (gray * kern[kern_index]);
+        for(k = 0; k < 24; ++k) {
+            for(i = 0; i < (kernel_width*kernel_width); ++i) {
 
-                        if(((kern_index+1) % (kernel_width*kernel_width)) == 0) {
-                            gabor_values[k] = product;
-                            product = 0.0;
-                        }
+                product = product + (gray_vals[i] * kern[i]);
 
-                        kern_index++;
+                if(((kern_index+1) % (kernel_width*kernel_width)) == 0) {
+                    gabor_vals[k] = product;
+                    product = 0.0;
                 }
             }
         }
@@ -174,7 +179,7 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
 	    return vec3(0.0, 0.9, 0.0);
 
     //return vec3(product, product, product);
-	return vec3(gabor_values[0], gabor_values[0], gabor_values[0]);
+	return vec3(gabor_vals[0], gabor_vals[0], gabor_vals[0]);
 }
 
 void main() {
