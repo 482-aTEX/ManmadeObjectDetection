@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -356,6 +357,9 @@ public class PreviewFragment extends Fragment {
                                 return;
                             }
 
+                             // cropping the region from 3264x2464 to 1092x820 (4:3 aspect ratio)
+                            Rect reducedImagePreview = new Rect (1094,822,2186,1642);
+
                             // When the session is ready, we start displaying the preview.
                             mCaptureSession = cameraCaptureSession;
                             try {
@@ -365,6 +369,10 @@ public class PreviewFragment extends Fragment {
                                 // Flash is automatically enabled when necessary.
                                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
                                         CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+
+                                // appending reduced size preview into requestBuilder
+                                mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION,reducedImagePreview);
+
 
                                 // Finally, we start displaying the camera preview.
                                 mPreviewRequest = mPreviewRequestBuilder.build();
