@@ -14,6 +14,8 @@ import android.view.Surface;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -175,6 +177,31 @@ public class GaborFilterView extends GLSurfaceView implements GLSurfaceView.Rend
         mExternalFrameBufferHolder.reset();
         mOffscreenFrameBufferHolder.reset();
 
+        String kernStr = null;
+        try {
+            kernStr = loadRawString(R.raw.kernels);
+
+
+        String[] kernVals = kernStr.split("\\s+");
+        FloatBuffer kernFloats = FloatBuffer.allocate(4056);
+        int i;
+        for(i = 0; i < kernVals.length; ++i) {
+
+            kernFloats.put(Float.parseFloat(kernVals[i]));
+        }
+        kernFloats.position(0);
+        Log.d("GAGDAG", kernFloats.array().length+"");
+        IntBuffer bufferObj = IntBuffer.allocate(1);
+        GLES31.glGenBuffers(1, bufferObj);
+        GLES31.glBindBuffer(GLES31.GL_UNIFORM_BUFFER, bufferObj.get(0));
+        GLES31.glBufferData(GLES31.GL_UNIFORM_BUFFER, 4056, kernFloats, GLES31.GL_DYNAMIC_DRAW);
+        int glubI = GLES31.glGetUniformBlockIndex(mGaborShader.getProgram(), "kern_array");
+
+        GLES31.glUniformBlockBinding(mGaborShader.getProgram(), glubI, 0);
+        GLES31.glBindBufferBase(GLES31.GL_UNIFORM_BUFFER, 0, bufferObj.get(0));/**/
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
         Rect surfaceFrame = this.getHolder().getSurfaceFrame();
         Surface surface = this.getHolder().getSurface();
         //mSurfaceTextureListener.onSurfaceTextureAvailable(surface, surfaceFrame.width(), surfaceFrame.height());
@@ -184,8 +211,8 @@ public class GaborFilterView extends GLSurfaceView implements GLSurfaceView.Rend
     public void onSurfaceChanged(GL10 unused, int width, int height){
 
         // Store width and height.
-        mWidth = width;
-        mHeight = height;
+        mWidth = height;
+        mHeight = width;
         Log.d("onSurfaceChanged", "width: "+ mWidth + " height: "+mHeight);
         // Calculate view aspect ratio.
         mAspectRatio[0] = (float) Math.min(mWidth, mHeight) / mWidth;

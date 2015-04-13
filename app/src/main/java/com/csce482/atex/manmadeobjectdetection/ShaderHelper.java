@@ -96,6 +96,10 @@ public class ShaderHelper {
         return shader;
     }
 
+    public int getProgram() {
+        return mProgram;
+    }
+
     /**
      * Compiles vertex and fragment shaders and links them into a program one
      * can use for rendering. Once OpenGL context is lost and onSurfaceCreated
