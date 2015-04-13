@@ -358,7 +358,7 @@ public class PreviewFragment extends Fragment {
                             }
 
                              // cropping the region from 3264x2464 to 1092x820 (4:3 aspect ratio)
-                            Rect reducedImagePreview = new Rect (1094,822,2186,1642);
+                            // Rect reducedImagePreview = new Rect (1094,822,2186,1642);
 
                             // When the session is ready, we start displaying the preview.
                             mCaptureSession = cameraCaptureSession;
@@ -371,7 +371,7 @@ public class PreviewFragment extends Fragment {
                                         CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
 
                                 // appending reduced size preview into requestBuilder
-                                mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION,reducedImagePreview);
+								// mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION,reducedImagePreview);
 
 
                                 // Finally, we start displaying the camera preview.
