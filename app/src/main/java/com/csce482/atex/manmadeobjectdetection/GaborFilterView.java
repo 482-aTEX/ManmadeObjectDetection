@@ -177,6 +177,7 @@ public class GaborFilterView extends GLSurfaceView implements GLSurfaceView.Rend
         mExternalFrameBufferHolder.reset();
         mOffscreenFrameBufferHolder.reset();
 
+        //===================Load Kernels Into UBO=========================
         String kernStr = null;
         try {
             kernStr = loadRawString(R.raw.kernels);
@@ -198,10 +199,24 @@ public class GaborFilterView extends GLSurfaceView implements GLSurfaceView.Rend
         int glubI = GLES31.glGetUniformBlockIndex(mGaborShader.getProgram(), "kern_array");
 
         GLES31.glUniformBlockBinding(mGaborShader.getProgram(), glubI, 0);
-        GLES31.glBindBufferBase(GLES31.GL_UNIFORM_BUFFER, 0, bufferObj.get(0));/**/
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
+        GLES31.glBindBufferBase(GLES31.GL_UNIFORM_BUFFER, 0, bufferObj.get(0));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //======================================================================
+        //==================Bind SSO For Energy Calculations====================
+
+        FloatBuffer energyBuf = FloatBuffer.allocate(24*300*300);
+        IntBuffer ssbo = IntBuffer.allocate(1);
+
+        GLES31.glGenBuffers(1, ssbo);
+        GLES31.glBindBuffer(GLES31.GL_SHADER_STORAGE_BUFFER, ssbo.get(0));
+        GLES31.glBufferData(GLES31.GL_SHADER_STORAGE_BUFFER, (24*300*300), energyBuf, GLES31.GL_DYNAMIC_COPY);
+        GLES31.glBindBuffer(GLES31.GL_SHADER_STORAGE_BUFFER, 0);
+
+        //======================================================================
+
         Rect surfaceFrame = this.getHolder().getSurfaceFrame();
         Surface surface = this.getHolder().getSurface();
         //mSurfaceTextureListener.onSurfaceTextureAvailable(surface, surfaceFrame.width(), surfaceFrame.height());

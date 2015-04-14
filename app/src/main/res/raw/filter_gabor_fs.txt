@@ -31,6 +31,11 @@ uniform kern_array {
     float kern[ARRAY_SIZE];
 };
 
+/*buffer gabor_arrays {
+
+    float gabor_vals[24*"resolution"];
+};*/
+
 const int KERNEL_WIDTH = 13;
 const int KERNEL_SIZE = 169;
 
@@ -75,6 +80,7 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
                 product = product + (gray_vals[i]* kern[i+k*KERNEL_SIZE]);
 
             }
+            //gabor_vals[k*(...)] = product;
             gabor_vals[k] = product;
             product = 0.0;
         }
