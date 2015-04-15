@@ -44,6 +44,10 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
 	float dx = uPixelSize.x;
 	float dy = uPixelSize.y;
 
+    /*if((int(texturePos.x/dx) % 6 != 0)) {
+        discard;
+    }*/
+
 	float x = texturePos.x;
 	float y = texturePos.y;
 
@@ -74,7 +78,7 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
             }
         }
 
-        for(k = 0; k < 1; ++k) {
+        for(k = 0; k < 24; ++k) {
             for(i = 0; i < KERNEL_SIZE; ++i) {
 
                 product = product + (gray_vals[i]* kern[i+k*KERNEL_SIZE]);

@@ -297,7 +297,7 @@ public class PreviewFragment extends Fragment {
         // Pick the smallest of those, assuming we found any
         if (bigEnough.size() > 0) {
             //return Collections.min(bigEnough, new CompareSizesByArea());
-            return new Size(1280, 720);
+            return new Size(320, 240);
         } else {
             return choices[0];
         }
@@ -366,7 +366,8 @@ public class PreviewFragment extends Fragment {
                                 // Flash is automatically enabled when necessary.
                                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
                                         CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
-
+//                                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE,
+//                                        CaptureRequest.CONTROL_EFFECT_MODE_MONO);
                                 // appending reduced size preview into requestBuilder
 								// mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION,reducedImagePreview);
 
