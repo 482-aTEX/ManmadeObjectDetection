@@ -103,6 +103,26 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
                             }
                         }*/
 
+        /*
+        for ( int i = 0; i < 24; i++) {
+        	for ( int n = 0; n < image_height / window_height; n++) {
+        		for (int j = 0; j < image_width / window_width; j++) {
+        			for (int m = 0; m < window_height; m++ ) {
+        				for (int k = 0; k < window_width; k++ ) {
+        					energy_ma[ i + (24 * j + (n * image_width / window_width)) ] =
+        						buffer[
+        							i * image_width * image_height
+        							+ k + j * window_width
+        							+ m * image_width
+        							+ n * window_height * image_width
+        						];
+        				}
+        			}
+        		}
+        	}
+        }
+        */
+
 	    return vec3(0.0, 0.9, 0.0);
 	}
 
