@@ -25,18 +25,17 @@ out vec4 outcolor;
 
 uniform vec2 uPixelSize;
 
-const int ARRAY_SIZE = 4056;
 uniform kern_array {
 
-    float kern[ARRAY_SIZE];
+    float kern[4056];
 };
 
 /*buffer gabor_arrays {
 
-    float gabor_vals[24*"resolution"];
+    float gabor_vals[24];
 };*/
 
-const int KERNEL_WIDTH = 13;
+const float KERNEL_WIDTH = 13.0;
 const int KERNEL_SIZE = 169;
 
 vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
@@ -44,91 +43,52 @@ vec3 gabor(vec3 color, sampler2D tex, vec2 texturePos) {
 	float dx = uPixelSize.x;
 	float dy = uPixelSize.y;
 
-    /*if((int(texturePos.x/dx) % 6 != 0)) {
-        discard;
-    }*/
-
 	float x = texturePos.x;
 	float y = texturePos.y;
 
-	//int kernel_width = 3;
-
 	float product = 0.0;
-	float gray;
-	int i, j, k;
-	k=0;
-	int offset = KERNEL_WIDTH / 2;
+	float i, j, k;
+	int m, n;
+	float offset = KERNEL_WIDTH / 2.0;
     vec4 pixel_rgb;
 
     int gray_index = 0;
     float gabor_vals[24];
-    gabor_vals[0] = 1.0;
+    //gabor_vals[0] = 1.0;
 
     float gray_vals[KERNEL_SIZE];     //doesn't like dynamically sized arrays
 
     //1536x1952
-    if(((x/dx) > 4.0) && ((y/dy) > 4.0) && ((x/dx) < 1532.0) && ((y/dy) < 1948.0)) {
+    if(((x/dx) > 100.0) && ((y/dy) > 100.0) && ((x/dx) < 1510.0) && ((y/dy) < 1920.0)) {
 
         for(i = -offset; i <= offset; ++i) {
             for(j = -offset; j <= offset; ++j) {
 
-                pixel_rgb = texture(tex, vec2(x + float(j)*dx, y + float(i)*dy));
-                gray_vals[gray_index] = (pixel_rgb[0] + pixel_rgb[1] + pixel_rgb[2]) / 3.0 * 255.0;
+                pixel_rgb = texture(tex, vec2(x + j*dx, y + i*dy));
+                gray_vals[gray_index] = (pixel_rgb[0] + pixel_rgb[1] + pixel_rgb[2]) / 3.0;
                 gray_index++;
+                if((i == 0.0) && (j == 0.0))
+                    gabor_vals[0] = gray_vals[gray_index];
             }
         }
 
-        for(k = 0; k < 24; ++k) {
-            for(i = 0; i < KERNEL_SIZE; ++i) {
+        for(m = 0; m < 24; ++m) {
+            for(n = 0; n < KERNEL_SIZE; ++n) {
 
-                product = product + (gray_vals[i]* kern[i+k*KERNEL_SIZE]);
+                product = product + (gray_vals[n]* kern[n+m*KERNEL_SIZE])*255.0;
 
             }
-            //gabor_vals[k*(...)] = product;
-            gabor_vals[k] = product;
+            gabor_vals[m] = product;
             product = 0.0;
         }
     } else {
-        product = 0.0;
+        gabor_vals[0] = 1.0;
     }
 
-    float energyMap[24];
-
-	if((int(texturePos.x/dx) % 100 == 0) && (int(texturePos.y/dy) % 100 == 0)) {
-
-                        /*for(int i = 0; i < 95; ++i) {
-                            for(int j = 0; j < 95; ++j) {
-
-                                energyMap[0-23] += (float)Math.pow(filtered[z][y].kernel[i][j], 2.0);
-                            }
-                        }*/
-
-        /*
-        for ( int i = 0; i < 24; i++) {
-        	for ( int n = 0; n < image_height / window_height; n++) {
-        		for (int j = 0; j < image_width / window_width; j++) {
-        			for (int m = 0; m < window_height; m++ ) {
-        				for (int k = 0; k < window_width; k++ ) {
-        					energy_ma[ i + (24 * j + (n * image_width / window_width)) ] =
-        						buffer[
-        							i * image_width * image_height
-        							+ k + j * window_width
-        							+ m * image_width
-        							+ n * window_height * image_width
-        						];
-        				}
-        			}
-        		}
-        	}
-        }
-        */
-
-	    return vec3(0.0, 0.9, 0.0);
-	}
-
-    //return vec3(product, product, product);
+    //return vec3(0.5, 0.5, 0.5);
 	return vec3(gabor_vals[0], gabor_vals[0], gabor_vals[0]);
 	//return texture(tex, vec2(x, y)).rgb;    //for testing camera purposes
+	//return color;
 }
 
 void main() {

@@ -296,8 +296,8 @@ public class PreviewFragment extends Fragment {
 
         // Pick the smallest of those, assuming we found any
         if (bigEnough.size() > 0) {
-            //return Collections.min(bigEnough, new CompareSizesByArea());
-            return new Size(320, 240);
+            return Collections.min(bigEnough, new CompareSizesByArea());
+            //return new Size(1280, 720);
         } else {
             return choices[0];
         }
@@ -354,9 +354,6 @@ public class PreviewFragment extends Fragment {
                                 return;
                             }
 
-                             // cropping the region from 3264x2464 to 1092x820 (4:3 aspect ratio)
-                            // Rect reducedImagePreview = new Rect (1094,822,2186,1642);
-
                             // When the session is ready, we start displaying the preview.
                             mCaptureSession = cameraCaptureSession;
                             try {
@@ -366,11 +363,6 @@ public class PreviewFragment extends Fragment {
                                 // Flash is automatically enabled when necessary.
                                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
                                         CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
-//                                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_EFFECT_MODE,
-//                                        CaptureRequest.CONTROL_EFFECT_MODE_MONO);
-                                // appending reduced size preview into requestBuilder
-								// mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION,reducedImagePreview);
-
 
                                 // Finally, we start displaying the camera preview.
                                 mPreviewRequest = mPreviewRequestBuilder.build();

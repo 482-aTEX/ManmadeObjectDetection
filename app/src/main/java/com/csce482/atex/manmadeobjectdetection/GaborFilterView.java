@@ -184,7 +184,7 @@ public class GaborFilterView extends GLSurfaceView implements GLSurfaceView.Rend
 
 
         String[] kernVals = kernStr.split("\\s+");
-        FloatBuffer kernFloats = FloatBuffer.allocate(4056);
+        FloatBuffer kernFloats = FloatBuffer.allocate(4056*4);
         int i;
         for(i = 0; i < kernVals.length; ++i) {
 
@@ -195,7 +195,7 @@ public class GaborFilterView extends GLSurfaceView implements GLSurfaceView.Rend
         IntBuffer bufferObj = IntBuffer.allocate(1);
         GLES31.glGenBuffers(1, bufferObj);
         GLES31.glBindBuffer(GLES31.GL_UNIFORM_BUFFER, bufferObj.get(0));
-        GLES31.glBufferData(GLES31.GL_UNIFORM_BUFFER, 4056, kernFloats, GLES31.GL_DYNAMIC_DRAW);
+        GLES31.glBufferData(GLES31.GL_UNIFORM_BUFFER, 4056*4, kernFloats, GLES31.GL_DYNAMIC_DRAW);
         int glubI = GLES31.glGetUniformBlockIndex(mGaborShader.getProgram(), "kern_array");
 
         GLES31.glUniformBlockBinding(mGaborShader.getProgram(), glubI, 0);
@@ -207,12 +207,12 @@ public class GaborFilterView extends GLSurfaceView implements GLSurfaceView.Rend
         //======================================================================
         //==================Bind SSO For Energy Calculations====================
 
-        FloatBuffer energyBuf = FloatBuffer.allocate(24*300*300);
+        FloatBuffer energyBuf = FloatBuffer.allocate(24*4);
         IntBuffer ssbo = IntBuffer.allocate(1);
 
         GLES31.glGenBuffers(1, ssbo);
         GLES31.glBindBuffer(GLES31.GL_SHADER_STORAGE_BUFFER, ssbo.get(0));
-        GLES31.glBufferData(GLES31.GL_SHADER_STORAGE_BUFFER, (24*300*300), energyBuf, GLES31.GL_DYNAMIC_COPY);
+        GLES31.glBufferData(GLES31.GL_SHADER_STORAGE_BUFFER, (24*4), energyBuf, GLES31.GL_DYNAMIC_COPY);
         GLES31.glBindBuffer(GLES31.GL_SHADER_STORAGE_BUFFER, 0);
 
         //======================================================================
